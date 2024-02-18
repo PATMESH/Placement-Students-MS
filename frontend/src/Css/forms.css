@@ -1,0 +1,55 @@
+/* Add your global styles here */
+
+.multiselect-container {
+  width: 300px; /* Adjust the width as needed */
+  margin: 20px; /* Add margin for spacing */
+}
+
+/* Styling for the label */
+.multiselect-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Styling for the multiselect dropdown */
+.multiselect {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Styling for the selected options */
+.multiselect__value-container {
+  padding: 8px;
+}
+
+/* Styling for the dropdown indicator */
+.multiselect__indicator-separator {
+  display: none;
+}
+
+.multiselect__indicators {
+  padding: 8px;
+}
+
+/* Styling for the options in the dropdown */
+.multiselect__menu {
+  width: 100%;
+}
+
+/* Styling for each option in the dropdown */
+.multiselect__option {
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* Styling for the selected option in the dropdown */
+.multiselect__option--is-selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Styling for the hover effect on options */
+.multiselect__option:hover {
+  background-color: #f2f2f2;
+}
