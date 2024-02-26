@@ -9,7 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const MultiStepForm = () => {
   const navigate = useNavigate();
-  const email = localStorage.getItem("email")
+  const email = localStorage.getItem("email");
+  useEffect(()=>{
+    if(!email){
+      navigate("/");
+    }
+  })
   const [formData, setFormData] = useState({
     name: "",
     email: email,
@@ -519,7 +524,18 @@ const MultiStepForm = () => {
       >
         <p>Your form has been submitted successfully!</p>
       </Modal>
-      <ToastContainer/>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="light"
+        />
     </div>
   );
 };
