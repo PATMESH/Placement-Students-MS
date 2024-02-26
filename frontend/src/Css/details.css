@@ -1,5 +1,5 @@
 /*custom font*/
-@import url(https://fonts.googleapis.com/css?family=Montserrat);
+@import url(https://fonts.googleapis.com/css2?family=Lato&family=Poppins);
 
 /*basic reset*/
 
@@ -36,21 +36,23 @@
 	margin-bottom: 10px;
 	width: 100%;
 	box-sizing: border-box;
-	font-family: montserrat;
-	font-size: 13px;
+	font-family: poppins;
+	font-size: 14px;
+	outline: none;
 }
 #msform .select{
 	margin-bottom: 10px;
 	width: 100%;
 	box-sizing: border-box;
-	font-size: 13px;
+	font-size: 14px;
 	text-align: start;
 }
 .css-13cymwt-control{
 	height: 52px;
 }
-#msform input:focus , #msform .select:focus{
-	border: 1px solid #c40808;
+#msform input:focus , #msform textarea, #msform .select:focus, #msform select:focus{
+	border: 1px solid #00063a75;
+	box-shadow: 0px 0px 4px 1px rgba(0, 0, 104, 0.637);
 }
 /*buttons*/
 #msform .action-button {

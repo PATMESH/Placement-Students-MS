@@ -4,12 +4,15 @@ import { Modal, Button } from "antd";
 import Select from "react-select";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MultiStepForm = () => {
   const navigate = useNavigate();
+  const email = localStorage.getItem("email")
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    email: email,
     registerNumber: "",
     fatherName: "",
     address: "",
@@ -28,10 +31,14 @@ const MultiStepForm = () => {
     project2: "",
     project3: "",
     project4: "",
+    project5: "",
     skills: [],
+
     portfolioLink: "",
     githubLink: "",
     linkedinProfile: "",
+    hackerrankLink:"",
+    leetcodeLink:"",
     resumeLink: "",
   });
 
@@ -140,7 +147,6 @@ const MultiStepForm = () => {
     const selectedLabels = selectedOptions.map((option) => option.label);
     setSelectedOptions(selectedLabels);
     setFormData({ ...formData, ["skills"]: selectedLabels });
-    console.log(selectedLabels);
   };
 
   const [step, setStep] = useState(1);
@@ -160,8 +166,15 @@ const MultiStepForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData.phoneNumber);
-    await fetch("https://vsbec-placement-backend.onrender.com/addDetails", {
+    
+    for (const key in formData) {
+      if (!formData[key]) {
+          toast.error('Please fill all the data');
+          return;
+      }
+  }
+
+    await fetch("http://localhost:8000/addDetails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,10 +197,10 @@ const MultiStepForm = () => {
       <form id="msform" onSubmit={handleSubmit}>
 
       <ul id="progressbar">
-        <li className={step === 1 ||step === 2 || step === 3 || step === 4 ? "active" : ""}>Personal</li>
-        <li className={step === 2 || step === 3 || step === 4 ? "active" : ""}>Educational</li>
-        <li className={step === 3 || step === 4 ? "active" : ""}>Projects</li>
-        <li className={step === 4 ? "active" : ""}>socials</li>
+        <li onClick={()=>setStep(1)} style={{cursor:'pointer'}} className={step === 1 ||step === 2 || step === 3 || step === 4 ? "active" : ""}>Personal</li>
+        <li onClick={()=>setStep(2)} style={{cursor:'pointer'}} className={step === 2 || step === 3 || step === 4 ? "active" : ""}>Educational</li>
+        <li onClick={()=>setStep(3)} style={{cursor:'pointer'}} className={step === 3 || step === 4 ? "active" : ""}>Projects</li>
+        <li onClick={()=>setStep(4)} style={{cursor:'pointer'}} className={step === 4 ? "active" : ""}>socials</li>
       </ul>
 
         {step === 1 && (
@@ -208,6 +221,7 @@ const MultiStepForm = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              readOnly
             />
             <input
               type="tel"
@@ -234,7 +248,7 @@ const MultiStepForm = () => {
               required
             />
             <input
-              type="text"
+              type="date"
               name="dob"
               placeholder="Date of Birth (dd-mm-yyyy)"
               value={formData.dob}
@@ -386,6 +400,13 @@ const MultiStepForm = () => {
               value={formData.project4}
               onChange={handleChange}
             />
+            <input
+              type="text"
+              name="project5"
+              placeholder="project5"
+              value={formData.project5}
+              onChange={handleChange}
+            />
 
             <Select
               options={skillOptions}
@@ -449,7 +470,22 @@ const MultiStepForm = () => {
               onChange={handleChange}
               required
             />
-
+            <input
+              type="text"
+              name="leetcodeLink"
+              placeholder="Leetcode Link"
+              value={formData.leetcodeLink}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="hackerrankLink"
+              placeholder="Hackerrank Link"
+              value={formData.hackerrankLink}
+              onChange={handleChange}
+              required
+            />
             <button
               type="button"
               className="previous action-button"
@@ -483,7 +519,7 @@ const MultiStepForm = () => {
       >
         <p>Your form has been submitted successfully!</p>
       </Modal>
-      
+      <ToastContainer/>
     </div>
   );
 };

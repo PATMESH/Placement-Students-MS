@@ -42,6 +42,7 @@ function SignInForm({ change }) {
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
+      await localStorage.setItem("email" , email)
       try {
         const response = await fetch("http://localhost:8000/find", {
           method: "POST",
@@ -52,6 +53,7 @@ function SignInForm({ change }) {
             email,
           }),
         });
+        
         const data = await response.json();
         const { message, id } = data;
         navigate(message === "Yes" ? `/profile/${id}` : "/details");

@@ -142,10 +142,13 @@ app.get('/user/:id', async (req, res) => {
         project2,
         project3,
         project4,
+        project5,
         skills,
         portfolioLink,
         githubLink,
-        linkedinProfile, 
+        hackerrankLink,
+        linkedinProfile,
+        leetcodeLink, 
         resumeLink,
       } = req.body;
    
@@ -163,14 +166,15 @@ app.get('/user/:id', async (req, res) => {
         degree,
         department,
         currentCgpa,
-        projectNames: [project1, project2, project3, project4],
+        projectNames: [project1, project2, project3, project4, project5],
         skills,
         portfolioLink,
         githubLink,
+        hackerrankLink,
         linkedinProfile,
+        leetcodeLink,
         resumeDriveLink: resumeLink,
       });
-      
       await userDetails.save();
       res.status(201).json({ message: 'Details added successfully' });
     } catch (error) {
