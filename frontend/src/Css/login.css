@@ -6,7 +6,7 @@
     box-sizing: border-box;
   }
   body{
-    background-color: rgb(227, 227, 227);
+    background-color: rgba(227, 227, 227, 0.726);
     font-family: "Montserrat", sans-serif;
   }
   .App {
@@ -290,6 +290,7 @@
     }
 
     .mob-text{
+      font-weight: bold;
       display: list-item;
       list-style: none;
     }

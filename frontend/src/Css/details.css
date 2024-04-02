@@ -171,3 +171,47 @@
 	background: rgba(23, 23, 58, 0.603); 
 	border-radius: 10px;
   }
+
+
+  @media only screen and (max-width: 768px) {
+    #msform {
+        width: 100%;
+        margin: 20px auto;
+    }
+    #msform fieldset {
+		width: 96%;
+        padding: 12px;
+		margin: 0 2%;
+		margin-top: 12%;
+    }
+    #msform input, #msform textarea , #msform select {
+        padding: 10px;
+        font-size: 12px;
+    }
+    #msform .action-button {
+        width: 80px;
+        padding: 8px;
+        margin: 8px 3px;
+		border-radius: 4px;
+    }
+    .fs-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    .fs-subtitle {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+	#progressbar{
+		margin-left: -40px;
+	}
+	#progressbar li{
+		font-size: 10px;
+	}
+    #progressbar li:before {
+        width: 25px;
+        padding: 5px;
+        font-size: 10px;
+        margin-bottom: 3px;
+    }
+}

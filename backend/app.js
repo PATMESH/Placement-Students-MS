@@ -45,10 +45,13 @@ mongoose.connect(atlasConnectionURI, {
     gender: String,
     department: String,
     degree: String,
+    year:String,
     portfolioLink: String,
     githubLink: String,
     linkedinProfile: String, 
     resumeDriveLink: String,
+    leetcodeLink:String,
+    hackerrankLink:String,
   });
   
   const UserAuth = mongoose.model('UserAuth', userAuthSchema);
@@ -96,7 +99,6 @@ mongoose.connect(atlasConnectionURI, {
     try {
         const user = await UserDetails.findOne({ email });
         if (user) {
-            console.log(user);
             res.json({ message: "Yes", id: user._id });
         } else {
             res.json({ message: "No" });
@@ -137,6 +139,7 @@ app.get('/user/:id', async (req, res) => {
         twelfthMark,
         degree,
         department,
+        year,
         currentCgpa,
         project1,
         project2,
@@ -165,6 +168,7 @@ app.get('/user/:id', async (req, res) => {
         twelfthMark,
         degree,
         department,
+        year,
         currentCgpa,
         projectNames: [project1, project2, project3, project4, project5],
         skills,
@@ -183,6 +187,80 @@ app.get('/user/:id', async (req, res) => {
     }
   });
 
+  app.post("/updateDetails/:userId", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const {
+        name,
+        email,
+        registerNumber,
+        fatherName,
+        address,
+        phoneNumber,
+        dob,
+        gender,
+        tenthMark,
+        twelfthMark,
+        degree,
+        department,
+        year,
+        currentCgpa,
+        project1,
+        project2,
+        project3,
+        project4,
+        project5,
+        skills,
+        portfolioLink,
+        githubLink,
+        hackerrankLink,
+        linkedinProfile,
+        leetcodeLink, 
+        resumeLink,
+      } = req.body;
+  
+      const updatedDetails = {
+        name,
+        email,
+        registerNumber,
+        fatherName,
+        address,
+        phoneNumber,
+        dateOfBirth: dob,
+        gender,
+        tenthMark,
+        twelfthMark,
+        degree,
+        department,
+        year,
+        currentCgpa,
+        projectNames: [project1, project2, project3, project4, project5],
+        skills,
+        portfolioLink,
+        githubLink,
+        hackerrankLink,
+        linkedinProfile,
+        leetcodeLink,
+        resumeDriveLink: resumeLink,
+      };
+  
+      const updatedUser = await UserDetails.findOneAndUpdate(
+        { _id: userId },
+        updatedDetails,
+        { new: true }
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json({ message: "Details updated successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  
 
 app.get('/users', async (req, res) => {
     try {

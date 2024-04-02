@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import "../Css/details.css";
+import "../../Css/details.css";
 import { Modal, Button } from "antd";
 import Select from "react-select";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useParams, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const MultiStepForm = () => {
+const EditDetails = () => {
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   useEffect(()=>{
@@ -46,6 +51,59 @@ const MultiStepForm = () => {
     leetcodeLink:"",
     resumeLink: "",
   });
+
+  const populateFormData = (userData) => {
+    setFormData({
+      ...formData,
+      name: userData.name,
+      email: userData.email,
+      registerNumber: userData.registerNumber,
+      fatherName: userData.fatherName,
+      address: userData.address,
+      phoneNumber: userData.phoneNumber,
+      dob: userData.dateOfBirth,
+      gender: userData.gender,
+      tenthMark: userData.tenthMark,
+      twelfthMark: userData.twelfthMark,
+      degree: userData.degree,
+      department: userData.department,
+      year:userData.year,
+      currentCgpa: userData.currentCgpa,
+      project1: userData.projectNames[0] || "",
+      project2: userData.projectNames[1] || "",
+      project3: userData.projectNames[2] || "",
+      project4: userData.projectNames[3] || "",
+      project5: userData.projectNames[4] || "",
+      skills: userData.skills,
+      portfolioLink: userData.portfolioLink,
+      githubLink: userData.githubLink,
+      linkedinProfile: userData.linkedinProfile,
+      hackerrankLink: userData.hackerrankLink,
+      leetcodeLink: userData.leetcodeLink,
+      resumeLink: userData.resumeDriveLink,
+    });
+  };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/user/${id}`);
+        if (!response.ok) {
+          throw new Error("User not found");
+        }
+        const userData = await response.json();
+        setUser(userData);
+        populateFormData(userData);
+        setSelectedOptions(userData.skills);
+      } catch (error) {
+        console.error(error);
+        setError(error.message || "Failed to fetch user");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, [id]);
 
   const skillOptions = [
     { value: "js", label: "JavaScript" },
@@ -174,12 +232,12 @@ const MultiStepForm = () => {
     
     for (const key in formData) {
       if (!formData[key]) {
-          toast.error('Please fill all the data');
+          toast.warning('Please fill all the data...');
           return;
       }
   }
 
-    await fetch("http://localhost:8000/addDetails", {
+    await fetch(`http://localhost:8000/updateDetails/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -189,13 +247,34 @@ const MultiStepForm = () => {
     setSuccessModalVisible(true);
   };
 
-  useEffect(()=>{
-    if(successModalVisible){
-      setInterval(()=>{
-        navigate("/profile");
-      },2000)
-    }
-  },[successModalVisible]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (successModalVisible) {
+        try {
+          const response = await fetch("http://localhost:8000/find", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+            }),
+          });
+          
+          const data = await response.json();
+          const { message, id } = data;
+          setTimeout(() => {
+            navigate(`/profile/${id}`);
+          }, 2000);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+  
+    fetchData();
+  }, [successModalVisible, email, navigate]);
+  
 
   return (
     <div id="details">
@@ -373,7 +452,7 @@ const MultiStepForm = () => {
             </button>
           </fieldset>
         )}
-        {step === 3 && (
+        {step === 3 && (  
           <fieldset>
             <h2 className="fs-title">Projects and Skills</h2>
 
@@ -515,18 +594,12 @@ const MultiStepForm = () => {
             Success!
           </div>
         }
-        onCancel={() => setSuccessModalVisible(false)}
-        footer={[
-          <Button key="reset" onClick={handleReset}>
-            Reset
-          </Button>,
-        ]}
       >
-        <p>Your form has been submitted successfully!</p>
+        <p style={{fontWeight:'bold'}}>Your Details has been edited successfully!</p>
       </Modal>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar
         newestOnTop={false}
         closeOnClick
@@ -540,4 +613,4 @@ const MultiStepForm = () => {
   );
 };
 
-export default MultiStepForm;
+export default EditDetails;

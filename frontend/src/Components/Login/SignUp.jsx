@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 
 const SignUpForm = ({change}) => {
@@ -9,6 +10,7 @@ const SignUpForm = ({change}) => {
     email: "",
     password: ""
   });
+  const[loading, setLoading] = useState(false);
   const[error, setError] = useState("");
 
   const handleChange = (evt) => {
@@ -21,9 +23,13 @@ const SignUpForm = ({change}) => {
 
   const handleOnSubmit = async (evt) => {
     evt.preventDefault();
-  
+    setLoading(true);
     const { name, email, password } = state;
-  
+    if(name.trim()==='' || email.trim()==='' || password.trim()===''){
+      setLoading(false);
+      setError("Fill all the details");
+      return;
+    }
     try {
       const response = await fetch('https://vsbec-placement-backend.onrender.com/register', {
         method: 'POST',
@@ -41,7 +47,7 @@ const SignUpForm = ({change}) => {
       if (!response.ok) {
         throw new Error(data.message || 'Registration failed');
       }
-  
+      setLoading(false);
       setState({
         name: '',
         email: '',
@@ -50,6 +56,7 @@ const SignUpForm = ({change}) => {
       setError("");
       change("signIn");
     } catch (error) {
+      setLoading(false);
       console.log(error);
       setError(error.message || 'Internal Server Error');
     }
@@ -100,7 +107,7 @@ const SignUpForm = ({change}) => {
           required
         />
         {error&& <h5 style={{color:'red'}}>{error}</h5>}
-        <button className="btn">Sign Up</button>
+        <button className="btn">{loading? <FontAwesomeIcon icon={faSpinner} spin size="xl"/>:"Sign Up"}</button>
         <p className="mob-text">Already have ah account? <a style={{color:'blue'}} onClick={()=>change(true)}>Login</a></p>
       </form>
     </div>

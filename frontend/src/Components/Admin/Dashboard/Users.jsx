@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import UserProfileCard from './UserProfileCard';
 import '../../../Css/usercard.css';
-import { Button } from "antd";
 import UserDetailsModal from './UserDetailsModal';
 
 const Users = ({ filter }) => {
@@ -12,7 +11,7 @@ const Users = ({ filter }) => {
 
   useEffect(() => {
     const fetchUsers = () => {
-      fetch("https://vsbec-placement-backend.onrender.com/users")
+      fetch("http://localhost:8000/users")
         .then((data) => data.json())
         .then((data) => setUsers(data));
     };

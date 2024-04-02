@@ -1,7 +1,7 @@
 // Sidebar.js
 import React, { useState } from 'react';
 import { Layout, Menu, Button } from 'antd';
-import { DashboardOutlined, UserOutlined, ApartmentOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, ApartmentOutlined , PieChartOutlined } from '@ant-design/icons';
 import '../../../Css/sidebar.css';  
 
 const { Sider } = Layout;
@@ -22,6 +22,7 @@ const Sidebar = ({ onSelectMenu }) => {
   };
 
   const handleDepartmentSelect = (department) => {
+    toggleCollapsed()
     onSelectMenu(department);
     setDepartmentVisible(false);
   };
@@ -37,10 +38,10 @@ const Sidebar = ({ onSelectMenu }) => {
       onCollapse={toggleCollapsed}
     >
       <Menu mode="inline" defaultSelectedKeys={['1']} style={{ height: '100%', borderRight: 0 }}>
-        <Menu.Item key="dashboard" icon={<DashboardOutlined />} onClick={() => onSelectMenu('dashboard')}>
+        <Menu.Item key="dashboard" icon={<DashboardOutlined />} onClick={() => {onSelectMenu('dashboard');toggleCollapsed();}}>
           Dashboard
         </Menu.Item>
-        <Menu.Item key="users" icon={<UserOutlined />} onClick={() => onSelectMenu('users')}>
+        <Menu.Item key="users" icon={<UserOutlined />} onClick={() => {onSelectMenu('users');toggleCollapsed();}}>
           Students
         </Menu.Item>
         <SubMenu
@@ -84,6 +85,9 @@ const Sidebar = ({ onSelectMenu }) => {
             AIDS
           </Menu.Item>
         </SubMenu>
+        <Menu.Item key="markanalysis" icon={<PieChartOutlined />} onClick={() => {onSelectMenu('markanalysis');toggleCollapsed();}}>
+          Mark Analysis
+        </Menu.Item>
       </Menu>
     </Sider>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGithub,
@@ -6,6 +6,7 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function SignInForm({ change }) {
   const navigate = useNavigate();
@@ -22,6 +23,39 @@ function SignInForm({ change }) {
       [evt.target.name]: value,
     });
   };
+
+  useEffect(()=>{
+    const fetchData = async () => {
+      const mail = localStorage.getItem("email");
+      if (mail) {
+        setLoading(true);
+        try {
+          const response = await fetch("http://localhost:8000/find", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: mail,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error('Failed to fetch data');
+          }
+          const data = await response.json();
+          const { message, id } = data;
+          navigate(message === "Yes" ? `/profile/${id}` : "/details");
+        } catch (error) {
+          console.error('Error:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  },[]);
 
   const handleOnSubmit = async (evt) => {
     evt.preventDefault();
@@ -53,16 +87,18 @@ function SignInForm({ change }) {
             email,
           }),
         });
-        
+        setLoading(false);
         const data = await response.json();
         const { message, id } = data;
         navigate(message === "Yes" ? `/profile/${id}` : "/details");
         setError("");
       } catch (error) {
+        setLoading(false);
         console.log(error);
         setError(error.message || "Internal Server Error");
       }
     } catch (error) {
+      setLoading(false);
       console.error(error);
       setError(error.message || "Internal Server Error");
     }
@@ -103,7 +139,7 @@ function SignInForm({ change }) {
           required
         />
         {error ? (
-          <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
+          <div style={{ color: "red", fontWeight: "bold" }}>{error}</div>
         ) : (
           <br />
         )}
@@ -111,7 +147,7 @@ function SignInForm({ change }) {
         <a href="/" style={{ textDecoration: "none" }}>
           Forgot your password?
         </a>
-        <button className="btn">Sign In</button>
+        <button className="btn">{loading? <FontAwesomeIcon icon={faSpinner} spin size="xl"/>:"Sign In"}</button>
         <p className="mob-text">
           Don't have ah account?{" "}
           <a href="/" style={{ color: "blue" }} onClick={() => change(false)}>

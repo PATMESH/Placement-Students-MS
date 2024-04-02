@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Table, Space, Button, Modal, Form, Input, Select, notification } from 'antd';
-import { BarChartOutlined, PieChartOutlined, LineChartOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Table, Space, Button, Modal, Input, Select, notification } from 'antd';
+import { LineChartOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 
 const { Option } = Select;
 
 const DashboardContents = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [departmentCounts, setDepartmentCounts] = useState([]);
+
+  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FFC0CB', '#66CDAA', '#6495ED', '#D2B48C', '#D8BFD8'];
 
   const columns = [
     { 
@@ -66,20 +70,31 @@ const DashboardContents = () => {
     },
 ];
 
-
-
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    calculateDepartmentCounts();
+  }, [users]);
+
   const fetchUsers = () => {
-    fetch("https://vsbec-placement-backend.onrender.com/users")
+    fetch("http://localhost:8000/users")
       .then((data) => data.json())
       .then((data) => setUsers(data))
       .catch((error) => {
         console.error('Error fetching users:', error);
   
       });
+  };
+
+  const calculateDepartmentCounts = () => {
+    const counts = users.reduce((acc, user) => {
+      acc[user.department] = (acc[user.department] || 0) + 1;
+      return acc;
+    }, {});
+    const departments = Object.keys(counts).map(department => ({ name: department, value: counts[department] }));
+    setDepartmentCounts(departments);
   };
 
   const handleEdit = (record) => {
@@ -111,6 +126,18 @@ const DashboardContents = () => {
     fetchUsers();
   };
 
+  const renderCustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="custom-tooltip">
+          <p>{`${data.name}: ${data.value}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div style={{ padding: '24px', background: '#f0f2f5', minHeight: '100vh' }}>
       <Row gutter={16}>
@@ -120,8 +147,15 @@ const DashboardContents = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Departments" bordered={false}>
-            <PieChartOutlined style={{ fontSize: '48px', color: '#52c41a' }} />
+          <Card title="Departments" bordered={false} >
+            <PieChart width={50} height={50} style={{display:'flex',justifyContent:'center',alignContent:'center'}}>
+              <Pie dataKey="value" data={departmentCounts} nameKey="name" cx="50%" cy="50%" outerRadius={25} fill="#8884d8" label>
+                {
+                  departmentCounts.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />)
+                }
+              </Pie>
+              <Tooltip content={renderCustomTooltip} wrapperStyle={{ fontSize: '12px' }} />
+            </PieChart>
           </Card>
         </Col>
         <Col span={8}>
@@ -134,7 +168,6 @@ const DashboardContents = () => {
       <Card title="User List" style={{ marginTop: '16px' }}>
         <Table columns={columns} dataSource={users} rowKey="id" />
       </Card>
-
       <Modal
         title="Are you sure?"
         visible={isModalVisible}
